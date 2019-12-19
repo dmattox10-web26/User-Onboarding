@@ -1,9 +1,9 @@
 import React from 'react'
+import axios from 'axios'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { Form, FormGroup, FormFeedback, Label, Input, Row, Col } from 'reactstrap'
-const Form = () => {
-    
+import { Form, FormGroup, Label, Input, Row, Col, Button } from 'reactstrap'
+const UOForm = (props) => {
     const formik = useFormik({
         initialValues: {
             name: 'Your Full Name',
@@ -33,7 +33,20 @@ const Form = () => {
            .oneOf([true], 'You must accept the terms and conditions.')
         }),
         onSubmit: values => {
-
+            axios({
+                method: 'post',
+                url: 'https://reqres.in/api/users',
+                data: values,
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then(res => {
+                if (res.status === 201) {
+                    props.addUser(values)
+                }
+                
+            })
         },
     })
 
@@ -90,7 +103,7 @@ const Form = () => {
                         <Input
                             id='confirm'
                             name='confirm'
-                            type='confirm'
+                            type='password'
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.confirm}
@@ -120,3 +133,5 @@ const Form = () => {
         </Form>
     )
 }
+
+export default UOForm
